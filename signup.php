@@ -1,52 +1,76 @@
 <?php
+$erreurs = [];
+$nom = $prenom = $email = $password = ""; // pour garder les valeurs après submit
+$success = false;
+
 if (isset($_POST['transmettre'])) {
+
     $email = $_POST['email'];
     $password = $_POST['password'];
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
 
-    if (empty($email)) {
-        echo "veuillez saisir un email ";
-    } else {
-        echo "vous avez saisi : $email";
+    if (empty($email))  { $erreurs['email'] = true; }
+    if (empty($password)) { $erreurs['password'] = true; }
+    if (empty($nom)) { $erreurs['nom'] = true; }
+    if (empty($prenom)) { $erreurs['prenom'] = true; }
+
+    if (empty($erreurs)) {
+        $success = true; // tout est rempli
     }
-    if (empty($password)) {
-        echo " veuillez saisir un mot de passe ";
-    } else {
-        echo "  $password";
-    }
-    if (empty($nom)) {
-        echo " veuillez saisir un nom ";
-    } else {
-        echo "  $nom";
-    }
-    if (empty($prenom)) {
-        echo " veuillez saisir un prenom ";
-    } else {
-        echo "  $prenom";
-    }
-?> 
+}
+?>
+
+<!-- POPUP D'ERREUR -->
+<?php if (!empty($erreurs)): ?>
+<div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+    <strong>Erreur !</strong> Veuillez remplir les champs manquants.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+<?php endif; ?>
+
+<!-- POPUP SUCCESS -->
+<?php if ($success): ?>
+<div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+    <strong>Well done!</strong> Inscription réussie !
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+<?php endif; ?>
+
 
 <form action="index.php?page=signup" method="post">
   <fieldset>
     <legend class="mt-4">Inscription</legend>
+
     <div>
-      <label for="exampleInputNom1" class="form-label mt-4">Votre Nom</label>
-      <input type="text" class="form-control" id="exampleInputNom1">
+      <label class="form-label mt-4">Votre Nom</label>
+      <input name="nom" type="text" 
+             class="form-control <?= isset($erreurs['nom']) ? 'is-invalid' : '' ?>" 
+             value="<?= htmlspecialchars($nom) ?>">
     </div>
+
     <div>
-      <label for="exampleInputPrenom1" class="form-label mt-4">Votre Prénom</label>
-      <input type="text" class="form-control" id="exampleInputPrenom1">
+      <label class="form-label mt-4">Votre Prénom</label>
+      <input name="prenom" type="text" 
+             class="form-control <?= isset($erreurs['prenom']) ? 'is-invalid' : '' ?>" 
+             value="<?= htmlspecialchars($prenom) ?>">
     </div>
+
     <div>
-      <label for="exampleInputEmail1" class="form-label mt-4">Email address</label>
-      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-      <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+      <label class="form-label mt-4">Email address</label>
+      <input name="email" type="email" 
+             class="form-control <?= isset($erreurs['email']) ? 'is-invalid' : '' ?>" 
+             value="<?= htmlspecialchars($email) ?>"
+             placeholder="Enter email">
     </div>
+
     <div>
-      <label for="exampleInputPassword1" class="form-label mt-4">Password</label>
-      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" autocomplete="off">
+      <label class="form-label mt-4">Password</label>
+      <input name="password" type="password"
+             class="form-control <?= isset($erreurs['password']) ? 'is-invalid' : '' ?>" 
+             placeholder="Password" autocomplete="off">
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+
+    <button name="transmettre" type="submit" class="btn btn-primary mt-3">Submit</button>
   </fieldset>
 </form>
