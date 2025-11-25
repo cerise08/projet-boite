@@ -1,5 +1,7 @@
 <?php
+Session_start();
 require_once 'header.php';
+require_once 'db/mariadb.php';
 ?>
 <?php
     if (isset($_GET['page'])) {

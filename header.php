@@ -29,6 +29,9 @@
         <li class="nav-item">
           <a class="nav-link" href="index.php?page=fichier">Envoyer un fichier</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="index.php?page=admin">Connexion Admin</a>
+        </li>
     </div>
   </div>
 </nav>

@@ -1,9 +1,9 @@
 <?php
-if (isset($_POST['transmettre'])) {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $nom = $_POST['nom'];
-    $prenom = $_POST['prenom'];
+if (isset($_POST['Valider'])) {
+    $email = $_POST['Mail'];
+    $password = $_POST['Password'];
+    $name = $_POST['Name'];
+    $surname = $_POST['Surname'];
 
     if (empty($email)) {
         echo "veuillez saisir un email ";
@@ -15,38 +15,53 @@ if (isset($_POST['transmettre'])) {
     } else {
         echo "  $password";
     }
-    if (empty($nom)) {
-        echo " veuillez saisir un nom ";
+    if (empty($name)) {
+        echo " veuillez saisir un name ";
     } else {
-        echo "  $nom";
+        echo "  $name";
     }
-    if (empty($prenom)) {
-        echo " veuillez saisir un prenom ";
+    if (empty($surname)) {
+        echo " veuillez saisir un Prénom$surname ";
     } else {
-        echo "  $prenom";
+        echo "  $surname";
     }
-?> 
+    if (!empty($email) && !empty($password) && !empty($name) && !empty($surname)) {
+        $password = password_hash("$password", PASSWORD_DEFAULT);
+        $sql = $dbh->prepare("INSERT INTO Utilisateur(`name`, `surname`, `email`, `password`) VALUES (:name, :surname, :email, :password)");
+        $sql->bindParam(':name', $name, PDO::PARAM_STR);
+        $sql->bindParam(':surname', $surname, PDO::PARAM_STR);
+        $sql->bindParam(':email', $email, PDO::PARAM_STR);
+        $sql->bindParam(':password', $password, PDO::PARAM_STR);
+        $r = $sql->execute();
+        if ($r) {
+            echo "Inscription réussie";
+        } else {
+            echo "Inscription échouée";
+        }
+    }
+}
+?>
 
 <form action="index.php?page=signup" method="post">
   <fieldset>
     <legend class="mt-4">Inscription</legend>
     <div>
       <label for="exampleInputNom1" class="form-label mt-4">Votre Nom</label>
-      <input type="text" class="form-control" id="exampleInputNom1">
+      <input type="text" class="form-control" id="exampleInputNom1" name="Name">
     </div>
     <div>
-      <label for="exampleInputPrenom1" class="form-label mt-4">Votre Prénom</label>
-      <input type="text" class="form-control" id="exampleInputPrenom1">
+      <label for="exampleInputsurname$surname1" class="form-label mt-4">Votre Prénom</label>
+      <input type="text" class="form-control" id="exampleInputsurname$surname1" name="Surname">
     </div>
     <div>
       <label for="exampleInputEmail1" class="form-label mt-4">Email address</label>
-      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" name="Mail">
       <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
     </div>
     <div>
       <label for="exampleInputPassword1" class="form-label mt-4">Password</label>
-      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" autocomplete="off">
+      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" autocomplete="off" name="Password">
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary" name="Valider">Soumettre</button>
   </fieldset>
 </form>
