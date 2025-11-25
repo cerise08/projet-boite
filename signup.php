@@ -18,23 +18,35 @@ if (isset($_POST['transmettre'])) {
     if (empty($erreurs)) {
         $success = true;
     }
+
+    if (!empty($password)) {
+      $password = password_hash($password, PASSWORD_DEFAULT);
+    }
+
+    // rôle par défaut pour TOUT nouvel inscrit
+    $role = "user";
+
+    if (!empty($email) && !empty($password) && !empty($nom) && !empty($prenom)) {
+
+        // INSERT COMPLET AVEC ROLE
+        $sql = $dbh->prepare("
+            INSERT INTO user(`nom`, `prenom`, `email`, `password`, `role`) 
+            VALUES (:nom, :prenom, :email, :password, :role)
+        ");
+    }    
+
     //on protège l'inscription en vérifiant que les données ne sont pas vides 
     if ((!empty($email)) && (!empty($password)) && (!empty($nom)) && (!empty($prenom))) {
       // on prépare une requête d'insertion qui associe une colonne de la table avec une donnée
-        $sql = $dbh->prepare("INSERT INTO user(`nom`, `prenom`, `email`, `password`) VALUES (:nom, :prenom, :email, :password)");
+      $sql = $dbh->prepare("INSERT INTO user(`id`, `email`, `password`, `nom`, `prenom`, `role`) VALUES (NULL, :email, :password, :nom, :prenom, :role)");
         //j'associe une variable de la requête avec une variable php en précisant son type 
         $sql->bindParam(':nom', $nom, PDO::PARAM_STR);
         $sql->bindParam(':prenom', $prenom, PDO::PARAM_STR);
         $sql->bindParam(':email', $email, PDO::PARAM_STR);
         $sql->bindParam(':password', $password, PDO::PARAM_STR);
+        $sql->bindParam(':role', $role, PDO::PARAM_STR);
 
-        // j'execute la requête préparée et je mets le résultat dans $r
-        $r = $sql->execute();
-        if($r){
-          echo "  Inscription réussie !";
-        } else {
-          echo "  Echec de l'inscription";
-        }
+        $sql->execute();
     }
 }
 ?>
@@ -87,6 +99,6 @@ if (isset($_POST['transmettre'])) {
              placeholder="Password" autocomplete="off">
     </div>
 
-    <button name="transmettre" type="submit" class="btn btn-primary mt-3">Submit</button>
+    <button name="transmettre" type="submit" class="btn btn-primary mt-3">Soumettre</button>
   </fieldset>
 </form>
