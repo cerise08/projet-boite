@@ -25,6 +25,7 @@ if (isset($_POST['transmettre'])) {
     } else {
         echo "  $prenom";
     }
+  }
 ?> 
 
 <form action="index.php?page=signup" method="post">
@@ -50,3 +51,4 @@ if (isset($_POST['transmettre'])) {
     <button type="submit" class="btn btn-primary">Submit</button>
   </fieldset>
 </form>
+  

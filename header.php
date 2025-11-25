@@ -24,6 +24,9 @@
           <a class="nav-link" href="index.php?page=signup">Inscription</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="index.php?page=upload">upload</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="index.php?page=connexion">Connexion</a>
         </li>
         <li class="nav-item">
