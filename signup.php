@@ -1,6 +1,6 @@
 <?php
 $erreurs = [];
-$nom = $prenom = $email = $password = ""; // pour garder les valeurs après submit
+$nom = $prenom = $email = $password = "";
 $success = false;
 
 if (isset($_POST['transmettre'])) {
@@ -16,12 +16,29 @@ if (isset($_POST['transmettre'])) {
     if (empty($prenom)) { $erreurs['prenom'] = true; }
 
     if (empty($erreurs)) {
-        $success = true; // tout est rempli
+        $success = true;
+    }
+    //on protège l'inscription en vérifiant que les données ne sont pas vides 
+    if ((!empty($email)) && (!empty($password)) && (!empty($nom)) && (!empty($prenom))) {
+      // on prépare une requête d'insertion qui associe une colonne de la table avec une donnée
+        $sql = $dbh->prepare("INSERT INTO user(`nom`, `prenom`, `email`, `password`) VALUES (:nom, :prenom, :email, :password)");
+        //j'associe une variable de la requête avec une variable php en précisant son type 
+        $sql->bindParam(':nom', $nom, PDO::PARAM_STR);
+        $sql->bindParam(':prenom', $prenom, PDO::PARAM_STR);
+        $sql->bindParam(':email', $email, PDO::PARAM_STR);
+        $sql->bindParam(':password', $password, PDO::PARAM_STR);
+
+        // j'execute la requête préparée et je mets le résultat dans $r
+        $r = $sql->execute();
+        if($r){
+          echo "  Inscription réussie !";
+        } else {
+          echo "  Echec de l'inscription";
+        }
     }
 }
 ?>
 
-<!-- POPUP D'ERREUR -->
 <?php if (!empty($erreurs)): ?>
 <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
     <strong>Erreur !</strong> Veuillez remplir les champs manquants.
@@ -29,7 +46,6 @@ if (isset($_POST['transmettre'])) {
 </div>
 <?php endif; ?>
 
-<!-- POPUP SUCCESS -->
 <?php if ($success): ?>
 <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
     <strong>Well done!</strong> Inscription réussie !
