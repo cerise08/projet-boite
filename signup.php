@@ -1,54 +1,99 @@
 <?php
-if (isset($_POST['Valider'])) {
-    $email = $_POST['Mail'];
-    $password = $_POST['Password'];
-    $name = $_POST['Name'];
-    $surname = $_POST['Surname'];
+// si la session n'est pas démarré alors le faire
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+$erreurs = [];
+$nom = $prenom = $email = $password = "";
+$success = false;
 
-    if (empty($email)) {
-        echo "veuillez saisir un email ";
-    } else {
-        echo "vous avez saisi : $email";
+if (isset($_POST['transmettre'])) {
+
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $nom = $_POST['nom'];
+    $prenom = $_POST['prenom'];
+
+    if (empty($email))  { $erreurs['email'] = true; }
+    if (empty($password)) { $erreurs['password'] = true; }
+    if (empty($nom)) { $erreurs['nom'] = true; }
+    if (empty($prenom)) { $erreurs['prenom'] = true; }
+
+    if (empty($erreurs)) {
+
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+        $role = "user";
+
+        $sql = $dbh->prepare("
+            INSERT INTO user (email, password, nom, prenom, role) 
+            VALUES (:email, :password, :nom, :prenom, :role)
+        ");
+
+        $sql->bindParam(':email', $email, PDO::PARAM_STR);
+        $sql->bindParam(':password', $passwordHash, PDO::PARAM_STR);
+        $sql->bindParam(':nom', $nom, PDO::PARAM_STR);
+        $sql->bindParam(':prenom', $prenom, PDO::PARAM_STR);
+        $sql->bindParam(':role', $role, PDO::PARAM_STR);
+
+        $sql->execute();
+        $success = true;
+
+        $_SESSION['prenom'] = $prenom;
+        $_SESSION['connected'] = true;
     }
-    if (empty($password)) {
-        echo " veuillez saisir un mot de passe ";
-    } else {
-        echo "  $password";
-    }
-    if (empty($name)) {
-        echo " veuillez saisir un name ";
-    } else {
-        echo "  $name";
-    }
-    if (empty($surname)) {
-        echo " veuillez saisir un Prénom$surname ";
-    } else {
-        echo "  $surname";
-    }
-  }
-?> 
+}
+?>
+
+<?php if (!empty($erreurs)): ?>
+<div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+    <strong>Erreur !</strong> Veuillez remplir les champs manquants.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+<?php endif; ?>
+
+<?php if ($success): ?>
+<div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+    <strong>Well done!</strong> Inscription réussie !
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <meta http-equiv="refresh" content="1; url=index.php?page=home">
+</div>
+<?php endif; ?>
+
 
 <form action="index.php?page=signup" method="post">
   <fieldset>
     <legend class="mt-4">Inscription</legend>
+
     <div>
-      <label for="exampleInputNom1" class="form-label mt-4">Votre Nom</label>
-      <input type="text" class="form-control" id="exampleInputNom1" name="Name">
+      <label class="form-label mt-4">Votre Nom</label>
+      <input name="nom" type="text" 
+             class="form-control <?= isset($erreurs['nom']) ? 'is-invalid' : '' ?>" 
+             value="<?= htmlspecialchars($nom) ?>">
     </div>
+
     <div>
-      <label for="exampleInputsurname$surname1" class="form-label mt-4">Votre Prénom</label>
-      <input type="text" class="form-control" id="exampleInputsurname$surname1" name="Surname">
+      <label class="form-label mt-4">Votre Prénom</label>
+      <input name="prenom" type="text" 
+             class="form-control <?= isset($erreurs['prenom']) ? 'is-invalid' : '' ?>" 
+             value="<?= htmlspecialchars($prenom) ?>">
     </div>
+
     <div>
-      <label for="exampleInputEmail1" class="form-label mt-4">Email address</label>
-      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" name="Mail">
-      <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+      <label class="form-label mt-4">Email address</label>
+      <input name="email" type="email" 
+             class="form-control <?= isset($erreurs['email']) ? 'is-invalid' : '' ?>" 
+             value="<?= htmlspecialchars($email) ?>"
+             placeholder="Enter email">
     </div>
+
     <div>
-      <label for="exampleInputPassword1" class="form-label mt-4">Password</label>
-      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" autocomplete="off" name="Password">
+      <label class="form-label mt-4">Password</label>
+      <input name="password" type="password"
+             class="form-control <?= isset($erreurs['password']) ? 'is-invalid' : '' ?>" 
+             placeholder="Password" autocomplete="off">
     </div>
-    <button type="submit" class="btn btn-primary" name="Valider">Soumettre</button>
+
+    <button name="transmettre" type="submit" class="btn btn-primary mt-3">Soumettre</button>
   </fieldset>
 </form>
-  
