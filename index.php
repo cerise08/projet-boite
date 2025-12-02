@@ -1,7 +1,7 @@
 <?php
 Session_start();
 require_once 'header.php';
-require_once 'db/mariadb.php';
+require_once __DIR__ . "/db/mariadb.php";
 ?>
 <?php
     if (isset($_GET['page'])) {
@@ -9,6 +9,7 @@ require_once 'db/mariadb.php';
     } else {
         $page = 'home';
     }
+    
     if (file_exists($page . '.php')) {
         require_once $page . '.php';
     } else {
