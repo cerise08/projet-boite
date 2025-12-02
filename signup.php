@@ -1,4 +1,8 @@
 <?php
+// si la session n'est pas démarré alors le faire
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
 $erreurs = [];
 $nom = $prenom = $email = $password = "";
 $success = false;
@@ -16,37 +20,27 @@ if (isset($_POST['transmettre'])) {
     if (empty($prenom)) { $erreurs['prenom'] = true; }
 
     if (empty($erreurs)) {
-        $success = true;
-    }
 
-    if (!empty($password)) {
-      $password = password_hash($password, PASSWORD_DEFAULT);
-    }
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-    // rôle par défaut pour TOUT nouvel inscrit
-    $role = "user";
+        $role = "user";
 
-    if (!empty($email) && !empty($password) && !empty($nom) && !empty($prenom)) {
-
-        // INSERT COMPLET AVEC ROLE
         $sql = $dbh->prepare("
-            INSERT INTO user(`nom`, `prenom`, `email`, `password`, `role`) 
-            VALUES (:nom, :prenom, :email, :password, :role)
+            INSERT INTO user (email, password, nom, prenom, role) 
+            VALUES (:email, :password, :nom, :prenom, :role)
         ");
-    }    
 
-    //on protège l'inscription en vérifiant que les données ne sont pas vides 
-    if ((!empty($email)) && (!empty($password)) && (!empty($nom)) && (!empty($prenom))) {
-      // on prépare une requête d'insertion qui associe une colonne de la table avec une donnée
-      $sql = $dbh->prepare("INSERT INTO user(`id`, `email`, `password`, `nom`, `prenom`, `role`) VALUES (NULL, :email, :password, :nom, :prenom, :role)");
-        //j'associe une variable de la requête avec une variable php en précisant son type 
+        $sql->bindParam(':email', $email, PDO::PARAM_STR);
+        $sql->bindParam(':password', $passwordHash, PDO::PARAM_STR);
         $sql->bindParam(':nom', $nom, PDO::PARAM_STR);
         $sql->bindParam(':prenom', $prenom, PDO::PARAM_STR);
-        $sql->bindParam(':email', $email, PDO::PARAM_STR);
-        $sql->bindParam(':password', $password, PDO::PARAM_STR);
         $sql->bindParam(':role', $role, PDO::PARAM_STR);
 
         $sql->execute();
+        $success = true;
+
+        $_SESSION['prenom'] = $prenom;
+        $_SESSION['connected'] = true;
     }
 }
 ?>
@@ -62,6 +56,7 @@ if (isset($_POST['transmettre'])) {
 <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
     <strong>Well done!</strong> Inscription réussie !
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <meta http-equiv="refresh" content="1; url=index.php?page=home">
 </div>
 <?php endif; ?>
 
