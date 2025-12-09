@@ -14,6 +14,7 @@ if (session_status() === PHP_SESSION_NONE) {
     </button>
 
     <div class="collapse navbar-collapse" id="navbarColor01">
+
       <ul class="navbar-nav me-auto">
         
         <li class="nav-item">
