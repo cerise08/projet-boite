@@ -10,7 +10,7 @@
     <label for="fileUpload">Fichier :</label>
     <input type="file" name="photo" id="fileUpload" accept=".ptx,.zip">
     <input type="submit" name="submit" value="Envoyer">
-    <p><strong>Note :</strong> seuls les formats .ptx et .zip sont autorisés.</p>
+    <p><strong>Note :</strong> seuls les formats .ptx et .zip sont autorisés, maximum 5 Mo.</p>
   </form>
   
 </body>

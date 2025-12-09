@@ -1,7 +1,7 @@
 <?php
 // si la session n'est pas démarré alors le faire
 if (session_status() === PHP_SESSION_NONE) {
-  session_start();
+    session_start();
 }
 $erreurs = [];
 $nom = $prenom = $email = $password = "";
@@ -14,10 +14,10 @@ if (isset($_POST['transmettre'])) {
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
 
-    if (empty($email))  { $erreurs['email'] = true; }
-    if (empty($password)) { $erreurs['password'] = true; }
-    if (empty($nom)) { $erreurs['nom'] = true; }
-    if (empty($prenom)) { $erreurs['prenom'] = true; }
+    if (empty($email)) {$erreurs['email'] = true;}
+    if (empty($password)) {$erreurs['password'] = true;}
+    if (empty($nom)) {$erreurs['nom'] = true;}
+    if (empty($prenom)) {$erreurs['prenom'] = true;}
 
     if (empty($erreurs)) {
 
@@ -26,7 +26,7 @@ if (isset($_POST['transmettre'])) {
         $role = "user";
 
         $sql = $dbh->prepare("
-            INSERT INTO user (email, password, nom, prenom, role) 
+            INSERT INTO user (email, password, nom, prenom, role)
             VALUES (:email, :password, :nom, :prenom, :role)
         ");
 
@@ -50,7 +50,7 @@ if (isset($_POST['transmettre'])) {
     <strong>Erreur !</strong> Veuillez remplir les champs manquants.
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 </div>
-<?php endif; ?>
+<?php endif;?>
 
 <?php if ($success): ?>
 <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
@@ -58,7 +58,7 @@ if (isset($_POST['transmettre'])) {
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     <meta http-equiv="refresh" content="1; url=index.php?page=home">
 </div>
-<?php endif; ?>
+<?php endif;?>
 
 
 <form action="index.php?page=signup" method="post">
@@ -67,30 +67,30 @@ if (isset($_POST['transmettre'])) {
 
     <div>
       <label class="form-label mt-4">Votre Nom</label>
-      <input name="nom" type="text" 
-             class="form-control <?= isset($erreurs['nom']) ? 'is-invalid' : '' ?>" 
-             value="<?= htmlspecialchars($nom) ?>">
+      <input name="nom" type="text"
+             class="form-control <?=isset($erreurs['nom']) ? 'is-invalid' : ''?>"
+             value="<?=htmlspecialchars($nom)?>">
     </div>
 
     <div>
       <label class="form-label mt-4">Votre Prénom</label>
-      <input name="prenom" type="text" 
-             class="form-control <?= isset($erreurs['prenom']) ? 'is-invalid' : '' ?>" 
-             value="<?= htmlspecialchars($prenom) ?>">
+      <input name="prenom" type="text"
+             class="form-control <?=isset($erreurs['prenom']) ? 'is-invalid' : ''?>"
+             value="<?=htmlspecialchars($prenom)?>">
     </div>
 
     <div>
       <label class="form-label mt-4">Email address</label>
-      <input name="email" type="email" 
-             class="form-control <?= isset($erreurs['email']) ? 'is-invalid' : '' ?>" 
-             value="<?= htmlspecialchars($email) ?>"
+      <input name="email" type="email"
+             class="form-control <?=isset($erreurs['email']) ? 'is-invalid' : ''?>"
+             value="<?=htmlspecialchars($email)?>"
              placeholder="Enter email">
     </div>
 
     <div>
       <label class="form-label mt-4">Password</label>
       <input name="password" type="password"
-             class="form-control <?= isset($erreurs['password']) ? 'is-invalid' : '' ?>" 
+             class="form-control <?=isset($erreurs['password']) ? 'is-invalid' : ''?>"
              placeholder="Password" autocomplete="off">
     </div>
 
