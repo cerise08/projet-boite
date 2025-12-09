@@ -1,10 +1,10 @@
 <?php
-//essaye de faire le code qui est dans le bloc try
+// essaye de faire le code qui est dans le bloc try
 try {
-    // se connecte à la BD et stocke la connexion dans  $dbh
-    $dbh = new PDO('mysql:host=localhost;dbname=PTweb', 'login4439', 'HNLCQSaIAXkvUJo');
+    // se connecte à la base de données et stocke la connection dans $dbh
+    $dbh = new PDO('mysql:host=localhost;dbname=projet-boite', 'login4441', 'WKNOONYSJfxbTQS');
 } catch (PDOException $e) {
-    //comme la connexion n'a pas fonctionnée , je stocke NULL dans $dbh
-    $dbh=null;
+    // comme la connexion n'a pas fonctionné, je stocke null dans $dbh
+    $dbh =  null;
 }
 ?>

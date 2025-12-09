@@ -33,4 +33,4 @@ if ($_SESSION['role'] == 'admin') {
         <img class="img-fluid rounded" style="width:300px" src="https://source.unsplash.com/400x200/?coding">
         <img class="img-fluid rounded" style="width:300px" src="https://source.unsplash.com/400x200/?students">
         <img class="img-fluid rounded" style="width:300px" src="https://source.unsplash.com/400x200/?presentation">
-    </div>
+</div>

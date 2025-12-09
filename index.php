@@ -1,5 +1,5 @@
 <?php
-Session_start();
+SESSION_START();
 require_once 'header.php';
 require_once __DIR__ . "/db/mariadb.php";
 if($dbh!=NULL){

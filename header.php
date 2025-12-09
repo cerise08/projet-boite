@@ -1,19 +1,26 @@
+<?php
+// si la session n'est pas démarré alors le faire
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+?>
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Boite à livrable</title>
-    <link href="https://bootswatch.com/5/pulse/bootstrap.min.css" rel="stylesheet" >
+    <title>Boite à Livrables</title>
+    <link href="https://bootswatch.com/5/pulse/bootstrap.min.css" rel="stylesheet">
   </head>
-  <body>
-  <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+<body>
+<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Boite à livrable</a>
+    <a class="navbar-brand" href="index.php">Boite à Livrables</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarColor01">
+
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <a class="nav-link active" href="index.php?page=home">Home
@@ -55,5 +62,3 @@
     </div>
   </div>
 </nav>
-<div class="container text-center">
-  <div class="row align-items-start">
