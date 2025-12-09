@@ -9,6 +9,7 @@ require_once 'db/mariadb.php';
     } else {
         $page = 'home';
     }
+    
     if (file_exists($page . '.php')) {
         require_once $page . '.php';
     } else {
