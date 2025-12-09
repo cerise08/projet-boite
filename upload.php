@@ -70,9 +70,7 @@ if ($ext === 'zip') {
 $safeName = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', basename($originalName));
 $target = $uploadDir . '/' . time() . '_' . $safeName;
 
-if (!move_uploaded_file($file['tmp_name'], $target)) {
-    die("Erreur serveur : impossible de sauvegarder le fichier.");
-}
+
 
 echo "Fichier uploadé avec succès : " . htmlspecialchars($safeName) . "<br>";
 echo "Taille : " . round($file['size'] / 1024, 1) . " Ko<br>";
