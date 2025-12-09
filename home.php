@@ -1,5 +1,5 @@
 <?php
-// si la session n'est pas démarré alors le faire
+// si la session n'est pas démarrée alors le faire
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -11,15 +11,17 @@ if (!isset($_SESSION['role'])) {
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['connected']) || $_SESSION['connected'] !== true) {
+    echo "Non connecté !";
     exit;
 }
 
-if ($_SESSION['role'] == 'admin') {
+// Si l'utilisateur est admin, redirection vers la page admin
+if (strtolower($_SESSION['role']) === 'admin') {
     header("Location: index.php?page=admin");
     exit();
 }
-
 ?>
+
 <h3 class="mt-4">📰 Nouveautés du campus</h3>
 <table class="table table-hover">
   <tbody>

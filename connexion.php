@@ -64,6 +64,8 @@ if (isset($_POST["Valider"])) {
                 // Normalisation (au cas où rôle en majuscule / espaces)
                 $role = trim(strtolower((string)$_SESSION['role']));
 
+                $_SESSION['connected'] = true;
+
                 if ($role === 'admin') {
                     header('Location: index.php?page=admin');
                     exit;
@@ -80,7 +82,8 @@ if (isset($_POST["Valider"])) {
 }
 ?>
 
-<form action="index.php?page=connect" method="post">
+<link href="https://bootswatch.com/5/pulse/bootstrap.min.css" rel="stylesheet">
+<form action="index.php?page=connexion" method="post">
   <h1 class = "text-danger text-center">Connexion</h1>
     <div>
       <label for="exampleInputEmail1" class="form-label mt-4">Email address</label>
