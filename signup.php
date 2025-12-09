@@ -26,6 +26,20 @@ if (isset($_POST['Valider'])) {
         echo "  $surname";
     }
   }
+if (!empty($email) && !empty($password) && !empty($name) && !empty($surname)) {
+$password = password_hash("$password", PASSWORD_DEFAULT);
+    $sql = $dbh->prepare("INSERT INTO Utilisateur(`name`, `surname`, `email`, `password`,`role`) VALUES (:name, :surname, :email, :password,'User')");
+    $sql->bindParam(':name', $name, PDO::PARAM_STR);
+    $sql->bindParam(':surname', $surname, PDO::PARAM_STR);
+    $sql->bindParam(':email', $email, PDO::PARAM_STR);
+    $sql->bindParam(':password', $password, PDO::PARAM_STR);
+        $r = $sql->execute();
+        if ($r) {
+            echo "Inscription réussie";
+        } else {
+            echo "Inscription échouée";
+        } 
+    }   
 ?> 
 
 <form action="index.php?page=signup" method="post">

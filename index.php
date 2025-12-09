@@ -2,20 +2,20 @@
 Session_start();
 require_once 'header.php';
 require_once __DIR__ . "/db/mariadb.php";
-?>
-<?php
-    if (isset($_GET['page'])) {
+if($dbh!=NULL){
+    if(isset($_GET['page'])){
         $page = $_GET['page'];
-    } else {
+    }
+    else{
         $page = 'home';
     }
-    
-    if (file_exists($page . '.php')) {
-        require_once $page . '.php';
-    } else {
+    if(file_exists($page.'.php')){
+        require_once $page.'.php';
+    }
+    else{
         require_once 'error404.php';
     }
+} 
+  require_once 'footer.php'     
 ?>
-<?php
-require_once 'footer.php';
-?>
+

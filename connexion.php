@@ -1,43 +1,29 @@
 <?php
 if (isset($_POST["Valider"])) {
-    //var_dump($_POST);
     $email = htmlentities($_POST["AdresseMail"]);
     $password = htmlentities($_POST["Password"]);
 
-    if (empty($email)) {
-        echo 'Veuillez saisir un Email';
-        $validemail = false;
-    } else {
-        $validemail = true;
-    }
-    if (empty($password)) {
-        echo 'Veuillez saisir un Mot De passe';
-        $valipassword = false;
-    } else {
-        $validpassword = true;
-    }
-    //si L'email et le mot de passe sont saisis
+    $validemail = !empty($email);
+    $validpassword = !empty($password);
+
+    if (!$validemail) echo 'Veuillez saisir un Email<br>';
+    if (!$validpassword) echo 'Veuillez saisir un Mot de passe<br>';
+
     if (($validemail)&&($validpassword)){
-      //on ecrit la requête qui va retourner les informations de l'utilisateur qui possède cet email
-      $sql = 'SELECT name, surname, email,password FROM Utilisateur where email= :email';
-      //on prépare la requête
+      $sql = 'SELECT name, surname, email,password,role FROM Utilisateur where email= :email';
       $sql = $dbh->prepare($sql);
-      // on associe la variable $email à la variable :email , cela protège des codes malveillants
       $sql->bindParam(':email', $email, PDO::PARAM_STR);
-      // execute la requete
       $sql->execute();
-      // on récupère la ligne de résultat
       $row = $sql->fetch();
-      // si la ligne est nulle c'est que l'uilisateur n'existe pas
       if($row==NULL){
-      // Alors , on écrit qu'il n'as pas les bons identifiants
       echo "Identifiants Incorrects";
     }
     else{
       if (password_verify($password, $row['password'])) {
-        // la connexion à réussi et nous stockons l'email de la personne dans le tableau $_session en créant la clef login
       $_SESSION['login'] = $row['email'];
-      header('Location:index.php');
+      $_SESSION['role'] = $row['role'];
+      header('Location: index.php?page=home');
+      exit;
     } else {
       echo "Identifiants Incorrects";
     }
@@ -45,7 +31,7 @@ if (isset($_POST["Valider"])) {
     }
 }
 ?>
-<form action="index.php?page=connect" method="post">
+<form action="index.php?page=connexion" method="post">
   <h1 class = "text-danger text-center">Connexion</h1>
     <div>
       <label for="exampleInputEmail1" class="form-label mt-4">Email address</label>

@@ -21,17 +21,37 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="index.php?page=signup">Inscription</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="index.php?page=connexion">Connexion</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="index.php?page=fichier">Envoyer un fichier</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="index.php?page=admin">Connexion Admin</a>
+        <?php
+        if(isset($_SESSION['login'])){
+          $email = $_SESSION['login'];
+          $role = $_SESSION['role'];
+        echo '<li class="nav-item">
+          <a class="nav-link" href="">'.$role.'</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="index.php?page=Deconnexion">Se Deconnecter</a>
+        </li>';
+        if ($_SESSION['role'] == 'Admin') {;
+          echo ' <li class="nav-item">
+          <a class="nav-link" href="index.php?page=ListeUser">Liste User</a>
+        </li>';
+        echo ' <li class="nav-item">
+          <a class="nav-link" href="index.php?page=admin">Liste Livrables</a>
+        </li>';
+        } 
+      }
+        else {
+          echo '<li class="nav-item">
+          <a class="nav-link" href="index.php?page=connexion">Connexion</a>
+        </li>';
+        echo '<li class="nav-item">
+        <a class="nav-link" href="index.php?page=signup">S\'inscrire</a>
+        </li>';
+        
+      }
+        ?>
     </div>
   </div>
 </nav>
