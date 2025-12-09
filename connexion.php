@@ -1,8 +1,20 @@
 <?php
+// DEBOGAGE / DEV : activer l'affichage des erreurs (enlever en production)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// si la session n'est pas démarré alors le faire
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+
 if (isset($_POST["Valider"])) {
-    //var_dump($_POST);
+
     $email = htmlentities($_POST["AdresseMail"]);
     $password = htmlentities($_POST["Password"]);
+
+    $validemail = $validpassword = false;
 
     if (empty($email)) {
         echo 'Veuillez saisir un Email';
@@ -12,39 +24,62 @@ if (isset($_POST["Valider"])) {
     }
     if (empty($password)) {
         echo 'Veuillez saisir un Mot De passe';
-        $valipassword = false;
+        $validpassword = false;
     } else {
         $validpassword = true;
     }
-    //si L'email et le mot de passe sont saisis
-    if (($validemail)&&($validpassword)){
-      //on ecrit la requête qui va retourner les informations de l'utilisateur qui possède cet email
-      $sql = 'SELECT name, surname, email,password FROM Utilisateur where email= :email';
-      //on prépare la requête
-      $sql = $dbh->prepare($sql);
-      // on associe la variable $email à la variable :email , cela protège des codes malveillants
-      $sql->bindParam(':email', $email, PDO::PARAM_STR);
-      // execute la requete
-      $sql->execute();
-      // on récupère la ligne de résultat
-      $row = $sql->fetch();
-      // si la ligne est nulle c'est que l'uilisateur n'existe pas
-      if($row==NULL){
-      // Alors , on écrit qu'il n'as pas les bons identifiants
-      echo "Identifiants Incorrects";
-    }
-    else{
-      if (password_verify($password, $row['password'])) {
-        // la connexion à réussi et nous stockons l'email de la personne dans le tableau $_session en créant la clef login
-      $_SESSION['login'] = $row['email'];
-      header('Location:index.php');
-    } else {
-      echo "Identifiants Incorrects";
-    }
-    }
+
+    if ($validemail && $validpassword) {
+
+        // récupérer aussi role (vérifie le nom de ta table/colonnes)
+        $sql = 'SELECT nom, prenom, email, password, role FROM user WHERE email = :email';
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+
+        if (!$stmt->execute()) {
+            // si execute échoue, on lève une erreur visible en dev
+            $err = $stmt->errorInfo();
+            echo "Erreur SQL: " . htmlspecialchars($err[2]);
+            exit;
+        }
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row === false) {
+            echo "Identifiants Incorrects";
+        } else {
+
+            // DEBUG TEMP: pour voir le contenu retourné (retirer après)
+            // var_dump($row);
+
+            if (password_verify($password, $row['password'])) {
+
+                // On stocke l'email et le role dans la session
+                $_SESSION['login'] = $row['email'];
+                $_SESSION['role'] = isset($row['role']) ? $row['role'] : null;
+
+                // DEBUG TEMP: afficher role avant redirection (retirer après)
+                // echo "Role trouvé : " . htmlspecialchars($_SESSION['role']);
+
+                // Normalisation (au cas où rôle en majuscule / espaces)
+                $role = trim(strtolower((string)$_SESSION['role']));
+
+                if ($role === 'admin') {
+                    header('Location: index.php?page=admin');
+                    exit;
+                } else {
+                    header('Location: index.php?page=home');
+                    exit;
+                }
+
+            } else {
+                echo "Identifiants Incorrects";
+            }
+        }
     }
 }
 ?>
+
 <form action="index.php?page=connect" method="post">
   <h1 class = "text-danger text-center">Connexion</h1>
     <div>
