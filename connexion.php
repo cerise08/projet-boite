@@ -1,15 +1,21 @@
 <?php
+// DEBOGAGE / DEV : activer l'affichage des erreurs (enlever en production)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// si la session n'est pas démarré alors le faire
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+
 if (isset($_POST["Valider"])) {
+
     $email = htmlentities($_POST["AdresseMail"]);
     $password = htmlentities($_POST["Password"]);
 
-    $validemail = !empty($email);
-    $validpassword = !empty($password);
+    $validemail = $validpassword = false;
 
-    if (!$validemail) echo 'Veuillez saisir un Email<br>';
-    if (!$validpassword) echo 'Veuillez saisir un Mot de passe<br>';
-
-    // Vérification du domaine EPSI
     if ($validemail && !preg_match('/^[\w.+-]+@ecoles-epsi\.fr$/', $email)) {
         echo "Seuls les emails @ecoles-epsi.fr sont autorisés.<br>";
         $validemail = false;
@@ -38,6 +44,8 @@ if (isset($_POST["Valider"])) {
     }
 }
 ?>
+
+<link href="https://bootswatch.com/5/pulse/bootstrap.min.css" rel="stylesheet">
 <form action="index.php?page=connexion" method="post">
   <h1 class="text-danger text-center">Connexion</h1>
   <div>
