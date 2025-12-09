@@ -39,7 +39,7 @@ if (isset($_POST['transmettre'])) {
         $sql->execute();
         $success = true;
 
-        $_SESSION['prenom'] = $prenom;
+        $_SESSION['login'] = $email;
         $_SESSION['connected'] = true;
     }
 }
