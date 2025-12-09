@@ -12,6 +12,6 @@
     <input type="submit" name="submit" value="Envoyer">
     <p><strong>Note :</strong> seuls les formats .ptx et .zip sont autorisés.</p>
   </form>
-  
 </body>
 </html>
+

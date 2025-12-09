@@ -1,79 +1,77 @@
 <?php
-// si la session n'est pas démarré alors le faire
-if (session_status() === PHP_SESSION_NONE) {
-  session_start();
-}
+
 $erreurs = [];
 $nom = $prenom = $email = $password = "";
 $success = false;
 
 if (isset($_POST['transmettre'])) {
+    $nom = trim($_POST['nom'] ?? '');
+    $prenom = trim($_POST['prenom'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $nom = $_POST['nom'];
-    $prenom = $_POST['prenom'];
+    if (empty($nom)) $erreurs['nom'] = true;
+    if (empty($prenom)) $erreurs['prenom'] = true;
+    if (empty($email)) $erreurs['email'] = true;
+    if (empty($password)) $erreurs['password'] = true;
 
-    if (empty($email))  { $erreurs['email'] = true; }
-    if (empty($password)) { $erreurs['password'] = true; }
-    if (empty($nom)) { $erreurs['nom'] = true; }
-    if (empty($prenom)) { $erreurs['prenom'] = true; }
+    if (!empty($email) && !preg_match('/^[\w.+-]+@ecoles-epsi\.fr$/', $email)) {
+        $erreurs['email'] = true;
+        $erreurs['domain'] = "Seuls les mails @ecoles-epsi.fr sont autorisés.";
+    }
 
     if (empty($erreurs)) {
-
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-
-        $role = "user";
-
-        $sql = $dbh->prepare("
-            INSERT INTO user (email, password, nom, prenom, role) 
-            VALUES (:email, :password, :nom, :prenom, :role)
-        ");
-
-        $sql->bindParam(':email', $email, PDO::PARAM_STR);
-        $sql->bindParam(':password', $passwordHash, PDO::PARAM_STR);
-        $sql->bindParam(':nom', $nom, PDO::PARAM_STR);
-        $sql->bindParam(':prenom', $prenom, PDO::PARAM_STR);
-        $sql->bindParam(':role', $role, PDO::PARAM_STR);
-
-        $sql->execute();
-        $success = true;
-
-        $_SESSION['prenom'] = $prenom;
-        $_SESSION['connected'] = true;
-    }
-  }
-if (!empty($email) && !empty($password) && !empty($name) && !empty($surname)) {
-$password = password_hash("$password", PASSWORD_DEFAULT);
-    $sql = $dbh->prepare("INSERT INTO Utilisateur(`name`, `surname`, `email`, `password`,`role`) VALUES (:name, :surname, :email, :password,'User')");
-    $sql->bindParam(':name', $name, PDO::PARAM_STR);
-    $sql->bindParam(':surname', $surname, PDO::PARAM_STR);
-    $sql->bindParam(':email', $email, PDO::PARAM_STR);
-    $sql->bindParam(':password', $password, PDO::PARAM_STR);
-        $r = $sql->execute();
-        if ($r) {
-            echo "Inscription réussie";
+        $stmt = $dbh->prepare("SELECT email FROM Utilisateur WHERE email = :email");
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->execute();
+        if ($stmt->fetch()) {
+            $erreurs['email'] = true;
+            $erreurs['exists'] = "Ce mail est déjà utilisé.";
         } else {
-            echo "Inscription échouée";
-        } 
-    }   
-?> 
+            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+            $role = "user";
+
+            $sql = $dbh->prepare("
+                INSERT INTO Utilisateur (name, surname, email, password, role) 
+                VALUES (:nom, :prenom, :email, :password, :role)
+            ");
+            $sql->bindParam(':nom', $nom, PDO::PARAM_STR);
+            $sql->bindParam(':prenom', $prenom, PDO::PARAM_STR);
+            $sql->bindParam(':email', $email, PDO::PARAM_STR);
+            $sql->bindParam(':password', $passwordHash, PDO::PARAM_STR);
+            $sql->bindParam(':role', $role, PDO::PARAM_STR);
+
+            if ($sql->execute()) {
+                $_SESSION['prenom'] = $prenom;
+                $_SESSION['login'] = $email;
+                $_SESSION['role'] = $role;
+
+                $success = true;
+            } else {
+                $erreurs['db'] = "Erreur lors de l'inscription, veuillez réessayer.";
+            }
+        }
+    }
+}
+?>
 
 <?php if (!empty($erreurs)): ?>
 <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-    <strong>Erreur !</strong> Veuillez remplir les champs manquants.
+    <strong>Erreur !</strong><br>
+    <?php foreach ($erreurs as $key => $msg): ?>
+        <?= is_string($msg) ? $msg : "Veuillez remplir le champ manquant : $key" ?><br>
+    <?php endforeach; ?>
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 </div>
 <?php endif; ?>
 
 <?php if ($success): ?>
 <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-    <strong>Well done!</strong> Inscription réussie !
+    <strong>Bien joué !</strong> Inscription réussie et vous êtes connecté !
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     <meta http-equiv="refresh" content="1; url=index.php?page=home">
 </div>
 <?php endif; ?>
-
 
 <form action="index.php?page=signup" method="post">
   <fieldset>

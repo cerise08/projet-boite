@@ -34,12 +34,7 @@ if (session_status() === PHP_SESSION_NONE) {
         if(isset($_SESSION['login'])){
           $email = $_SESSION['login'];
           $role = $_SESSION['role'];
-        echo '<li class="nav-item">
-          <a class="nav-link" href="">'.$role.'</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="index.php?page=deconnexion">Se Deconnecter</a>
-        </li>';
+          $surname = $_SESSION['prenom'];
         if ($_SESSION['role'] == 'Admin') {;
           echo ' <li class="nav-item">
           <a class="nav-link" href="index.php?page=ListeUser">Liste User</a>
@@ -48,6 +43,12 @@ if (session_status() === PHP_SESSION_NONE) {
           <a class="nav-link" href="index.php?page=admin">Liste Livrables</a>
         </li>';
         } 
+        echo '<li class="nav-item">
+        <a class="nav-link" href="">'.$surname.'</a>
+        </li>';
+        echo '<li class="nav-item">
+        <a class="nav-link" href="index.php?page=deconnexion">Se Deconnecter</a>
+      </li>';
       }
         else {
           echo '<li class="nav-item">

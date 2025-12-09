@@ -1,17 +1,9 @@
 <?php
-// si la session n'est pas démarré alors le faire
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-  }
+
 
 // Vérifier si le rôle est défini
 if (!isset($_SESSION['role'])) {
     $_SESSION['role'] = 'user';
-}
-
-// Vérifier si l'utilisateur est connecté
-if (!isset($_SESSION['connected']) || $_SESSION['connected'] !== true) {
-    exit;
 }
 
 if ($_SESSION['role'] == 'admin') {
