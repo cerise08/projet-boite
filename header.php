@@ -31,7 +31,7 @@
           <a class="nav-link" href="">'.$role.'</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="index.php?page=Deconnexion">Se Deconnecter</a>
+          <a class="nav-link" href="index.php?page=deconnexion">Se Deconnecter</a>
         </li>';
         if ($_SESSION['role'] == 'Admin') {;
           echo ' <li class="nav-item">
